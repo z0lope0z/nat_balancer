@@ -18,6 +18,11 @@ class NatBalancerTestCase(unittest.TestCase):
             {"id": "3", "zone": "ap-southeast-1c"}
         ]
 
+    def partial_instances(self):
+        return [
+            {"id": "1", "zone": "ap-southeast-1a"},
+        ]
+
     def partial_subnets(self):
         return [
             {"id": "2", "zone": "ap-southeast-1b"},
@@ -48,6 +53,12 @@ class NatBalancerTestCase(unittest.TestCase):
         self.assertTrue(self.get_subnet_zones(allocations['1']) == set(['ap-southeast-1a']))
         self.assertTrue(self.get_subnet_zones(allocations['2']) == set(['ap-southeast-1b']))
         self.assertTrue(self.get_subnet_zones(allocations['3']) == set(['ap-southeast-1c']))
+
+    def test_partial_instances(self):
+        balancer = NatBalancer(self.partial_instances(), self.complete_subnets())
+        allocations = balancer.allocate()
+        balancer.print_allocations(allocations)
+        self.assertTrue(len(allocations['1']) == 3)
 
     def test_no_instances(self):
         balancer = NatBalancer(self.empty_instances(), self.complete_subnets())
