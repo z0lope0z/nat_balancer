@@ -1,8 +1,8 @@
 # Overview
 
-Given a list of nat instances, and subnets, the NatBalancer will allocate a subnet to a NAT instance in the same availability zone. If no NAT instance in the same availability zone exists, then it randomly selects from existing NAT instances.
+Given a list of nat instances and subnets, the NatBalancer will allocate a subnet to a NAT instance in the same availability zone. If no NAT instance in the same availability zone exists, then it randomly selects from existing NAT instances.
 
-For now, this is more of a helper object
+For now, this is more of a helper object.
 
 # Usage
 
