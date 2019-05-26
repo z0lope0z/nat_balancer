@@ -11,11 +11,27 @@ class NatBalancerTestCase(unittest.TestCase):
             {"id": "3", "zone": "ap-southeast-1c"}
         ]
 
+    def complete_weighted_instances(self):
+        return [
+            {"id": "1", "zone": "ap-southeast-1a", "weight": 5},
+            {"id": "2", "zone": "ap-southeast-1b", "weight": 0},
+            {"id": "3", "zone": "ap-southeast-1c", "weight": 0}
+        ]
+
     def complete_subnets(self):
         return [
             {"id": "1", "zone": "ap-southeast-1a"},
             {"id": "2", "zone": "ap-southeast-1b"},
             {"id": "3", "zone": "ap-southeast-1c"}
+        ]
+
+    def complete_excessive_subnets(self):
+        return [
+            {"id": "1", "zone": "ap-southeast-1a"},
+            {"id": "2", "zone": "ap-southeast-1b"},
+            {"id": "3", "zone": "ap-southeast-1c"},
+            {"id": "4", "zone": "ap-southeast-1d"},
+            {"id": "5", "zone": "ap-southeast-1d"}
         ]
 
     def partial_instances(self):
@@ -53,6 +69,13 @@ class NatBalancerTestCase(unittest.TestCase):
         self.assertTrue(self.get_subnet_zones(allocations['1']) == set(['ap-southeast-1a']))
         self.assertTrue(self.get_subnet_zones(allocations['2']) == set(['ap-southeast-1b']))
         self.assertTrue(self.get_subnet_zones(allocations['3']) == set(['ap-southeast-1c']))
+
+    def test_weighted_instances(self):
+        """Instances have weights across different subnets"""
+        balancer = NatBalancer(self.complete_weighted_instances(), self.complete_excessive_subnets())
+        allocations = balancer.allocate()
+        balancer.print_allocations(allocations)
+        self.assertTrue(len(allocations['1']) == 5)
 
     def test_partial_instances(self):
         balancer = NatBalancer(self.partial_instances(), self.complete_subnets())
